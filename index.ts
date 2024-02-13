@@ -10,6 +10,7 @@ import passport from "passport";
 import {db} from "./config/database";
 
 import categoryRoute from "./routes/category.route";
+import memberRoute from "./routes/member.route";
 
 
 const app: Application = express();
@@ -24,6 +25,7 @@ app.use(passport.initialize());
 require("./config/passport");
 
 app.use("/category", categoryRoute);
+app.use("/member", memberRoute)
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Welcome! To the QCP Server');
