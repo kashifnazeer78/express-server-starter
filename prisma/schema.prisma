@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Member {
+  id         String       @id @default(cuid())
+  scope      Role         @default(USER)
+  name       String
+  email      String       @unique
+  password   String
+  isActive   Boolean      @default(true)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  MemberTask MemberTask[]
+  Token      Token?
+}
+
+model Token {
+  id           String   @id @default(cuid())
+  refreshToken String   @unique
+  accessToken  String   @unique
+  memberId     String   @unique
+  createdAt    DateTime @default(now())
+  Member       Member   @relation(fields: [memberId], references: [id])
+}
+
+model MemberTask {
+  id            String         @id @default(cuid())
+  member        Member         @relation(fields: [memberId], references: [id])
+  memberId      String
+  task          Task           @relation(fields: [taskId], references: [id])
+  taskId        String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  MemberTaskLog MemberTaskLog?
+}
+
+model MemberTaskLog {
+  id           String     @id @default(cuid())
+  memberTask   MemberTask @relation(fields: [memberTaskId], references: [id])
+  memberTaskId String     @unique
+  taskType     Int
+  time         DateTime
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Task {
+  id          String        @id @default(cuid())
+  title       String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  MemberTask  MemberTask[]
+  TaskLog     TaskLog?
+  TaskProduct TaskProduct[]
+}
+
+model TaskLog {
+  id              String   @id @default(cuid())
+  Task            Task     @relation(fields: [taskId], references: [id])
+  taskId          String   @unique
+  operationType   Int
+  operationDetail String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Product   Product[]
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  categoryId  String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Category    Category      @relation(fields: [categoryId], references: [id])
+  TaskProduct TaskProduct[]
+}
+
+model TaskProduct {
+  id        String   @id @default(cuid())
+  taskId    String
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Task      Task     @relation(fields: [taskId], references: [id])
+  Product   Product  @relation(fields: [productId], references: [id])
+}
