@@ -89,7 +89,7 @@ model TaskLog {
 
 model Category {
   id        String    @id @default(cuid())
-  name      String
+  name      String    @unique
   parentId  String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -98,7 +98,7 @@ model Category {
 
 model Product {
   id          String        @id @default(cuid())
-  name        String
+  name        String        @unique
   categoryId  String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt

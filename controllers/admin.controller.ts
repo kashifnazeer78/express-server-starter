@@ -77,8 +77,3 @@ export const signIn = asyncHandler(async (req: Request, res: Response) => {
         });
     }
 })
-
-exports = {
-    signUp,
-    signIn
-}
