@@ -1,14 +1,17 @@
-import asyncHandler from "express-async-handler"
+import asyncHandler from "express-async-handler";
 import {Request, Response} from "express";
-import bcrypt from "bcryptjs";
 import {db} from "../config/database";
-
+import bcrypt from "bcryptjs";
 import {generateToken} from "../utils/generateToken";
 
+
+/**
+ * @route POST /admin/signin
+ */
 export const signUp = asyncHandler(async (req: Request, res: Response) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        await db.member.create({
+        await db.admin.create({
             data: {
                 name: req.body.name,
                 email: req.body.email,
@@ -26,11 +29,13 @@ export const signUp = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
-
+/**
+ * @route POST /admin/signin
+ */
 export const signIn = asyncHandler(async (req: Request, res: Response) => {
     try {
         const {email, password} = req.body;
-        const existingUser = await db.member.findUnique({
+        const existingUser = await db.admin.findUnique({
             where: {
                 email: email
             }
@@ -55,11 +60,10 @@ export const signIn = asyncHandler(async (req: Request, res: Response) => {
             return
         }
 
-        const {accessToken, refreshToken} = await generateToken(existingUser);
+        const {accessToken} = await generateToken(existingUser);
 
         res.status(200).json({
             accessToken,
-            refreshToken,
             accessTokenUpdatedAt: new Date().toLocaleString(),
             user: {
                 id: existingUser.id,
@@ -73,7 +77,6 @@ export const signIn = asyncHandler(async (req: Request, res: Response) => {
         });
     }
 })
-
 
 exports = {
     signUp,

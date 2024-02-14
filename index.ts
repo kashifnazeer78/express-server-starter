@@ -11,6 +11,7 @@ import {db} from "./config/database";
 
 import categoryRoute from "./routes/category.route";
 import memberRoute from "./routes/member.route";
+import adminRoute from "./routes/admin.route";
 
 
 const app: Application = express();
@@ -24,6 +25,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(passport.initialize());
 require("./config/passport");
 
+app.use("/admin", adminRoute)
 app.use("/category", categoryRoute);
 app.use("/member", memberRoute)
 
