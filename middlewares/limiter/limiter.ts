@@ -10,6 +10,6 @@ const createLimiter = (windowMs: number, limit: number, message: string) => {
     });
 }
 
-const signUpSignInLimiter = createLimiter(10 * 60 * 1000, 100, MESSAGE);
+const signUpSignInLimiter = createLimiter(10 * 60 * 1000, 100, MESSAGE); // 100 requests per 10 minutes
 
 export {signUpSignInLimiter};
